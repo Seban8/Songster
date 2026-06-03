@@ -1,0 +1,27 @@
+body {
+    margin: 0;
+    color: #1f2933;
+    background: #f6f7f9;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    padding: 18px 32px;
+    background: #111827;
+    color: white;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+}
+
+main {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 32px;
+}
+
+.page-heading {
+    margin-bottom: 24px;
+}

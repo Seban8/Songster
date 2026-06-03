@@ -1,0 +1,11 @@
+[project]
+name = "songster"
+version = "1.0.0"
+description = "A small Songster application for the DIS course."
+dependencies = [
+    "flask (==3.1.1)",
+    "psycopg2 (==2.9.10)",
+]
+
+[tool.setuptools]
+py-modules = []
