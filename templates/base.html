@@ -8,11 +8,24 @@
 <body>
     <header>
         <h1><a href="{{ url_for('song.index') }}">Songster</a></h1>
-        <nav>
-            <a href="{{ url_for('song.index') }}">Songs</a>
-            <a href="{{ url_for('song.search') }}">Search</a>
-            <a href="{{ url_for('song.new_song') }}">Add song</a>
-        </nav>
+        <div class="header-controls">
+            <nav>
+                <a href="{{ url_for('song.index') }}">Songs</a>
+                <a href="{{ url_for('song.search') }}">Search</a>
+                <a href="{{ url_for('song.new_song') }}">Add song</a>
+            </nav>
+
+            <form method="POST" action="{{ url_for('song.select_user') }}" class="user-switcher">
+                <label for="user_id">Current user</label>
+                <select id="user_id" name="user_id" onchange="this.form.submit()">
+                    {% for user_id in available_users %}
+                        <option value="{{ user_id }}" {% if user_id == current_user_id %}selected{% endif %}>
+                            User {{ user_id }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
     </header>
 
     <main>

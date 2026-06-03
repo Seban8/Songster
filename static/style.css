@@ -24,6 +24,31 @@ nav {
     gap: 16px;
 }
 
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.user-switcher {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-switcher label {
+    display: block;
+    color: #d8dee8;
+    font-size: 14px;
+}
+
+.user-switcher select {
+    width: auto;
+    min-width: 104px;
+    color: #1f2933;
+    background: white;
+}
+
 main {
     max-width: 1080px;
     margin: 0 auto;

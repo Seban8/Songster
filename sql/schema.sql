@@ -1,5 +1,6 @@
 DROP VIEW IF EXISTS song_catalog CASCADE;
 
+DROP TABLE IF EXISTS reviews CASCADE;
 DROP TABLE IF EXISTS sings CASCADE;
 DROP TABLE IF EXISTS song_producer CASCADE;
 DROP TABLE IF EXISTS song_genre CASCADE;
@@ -8,9 +9,15 @@ DROP TABLE IF EXISTS albums CASCADE;
 DROP TABLE IF EXISTS artists CASCADE;
 DROP TABLE IF EXISTS producers CASCADE;
 DROP TABLE IF EXISTS genres CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
 
 CREATE TABLE genres (
     genre_name TEXT PRIMARY KEY
+);
+
+CREATE TABLE users (
+    user_id INT PRIMARY KEY CHECK (user_id BETWEEN 1 AND 5),
+    display_name TEXT NOT NULL
 );
 
 CREATE TABLE producers (
@@ -58,6 +65,14 @@ CREATE TABLE sings (
     song_id INT REFERENCES songs(song_id) ON DELETE CASCADE,
     art_id INT REFERENCES artists(art_id) ON DELETE CASCADE,
     PRIMARY KEY (song_id, art_id)
+);
+
+CREATE TABLE reviews (
+    song_id INT REFERENCES songs(song_id) ON DELETE CASCADE,
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+    rating INT CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT,
+    PRIMARY KEY (song_id, user_id)
 );
 
 CREATE VIEW song_catalog AS

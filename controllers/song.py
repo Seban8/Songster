@@ -1,6 +1,6 @@
 import re
 
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, request, session, url_for
 
 from models.song import (
     create_song,
@@ -17,6 +17,25 @@ from models.song import (
 
 
 bp = Blueprint("song", __name__, url_prefix="/")
+AVAILABLE_USERS = tuple(range(1, 6))
+
+
+def current_user_id():
+    user_id = session.get("current_user_id", 1)
+    if user_id not in AVAILABLE_USERS:
+        user_id = 1
+        session["current_user_id"] = user_id
+    return user_id
+
+
+@bp.app_context_processor
+def inject_user_menu():
+    active_user_id = current_user_id()
+    return {
+        "available_users": AVAILABLE_USERS,
+        "current_user_id": active_user_id,
+        "current_user_name": f"User {active_user_id}",
+    }
 
 
 def song_form_choices():
@@ -26,6 +45,20 @@ def song_form_choices():
         "genres": list_genres(),
         "producers": list_producers(),
     }
+
+
+@bp.route("/users/select", methods=["POST"])
+def select_user():
+    try:
+        user_id = int(request.form.get("user_id", 1))
+    except ValueError:
+        user_id = 1
+
+    if user_id not in AVAILABLE_USERS:
+        user_id = 1
+
+    session["current_user_id"] = user_id
+    return redirect(request.referrer or url_for("song.index"))
 
 
 @bp.route("/")
