@@ -26,10 +26,14 @@ def run_sql_file(cur, file_name):
 
 
 def init_db():
+    from scripts.import_liked_songs import import_liked_songs
+
     conn = db_connection()
     cur = conn.cursor()
 
     run_sql_file(cur, "schema.sql")
+    run_sql_file(cur, "seed.sql")
+    import_liked_songs(cur)
 
     conn.commit()
     cur.close()
