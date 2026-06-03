@@ -22,5 +22,12 @@
             <dt>Producers</dt>
             <dd>{{ song.producers or "-" }}</dd>
         </dl>
+
+        <div class="actions">
+            <a class="button" href="{{ url_for('song.edit_song', song_id=song.id) }}">Edit</a>
+            <form method="POST" action="{{ url_for('song.remove_song', song_id=song.id) }}">
+                <button type="submit" class="danger">Delete</button>
+            </form>
+        </div>
     </article>
 {% endblock %}

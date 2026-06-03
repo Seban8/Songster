@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if song %}
+        <h2>Edit song</h2>
+        <form method="POST" action="{{ url_for('song.edit_song', song_id=song.id) }}" class="form">
+    {% else %}
+        <h2>Add song</h2>
+        <form method="POST" action="{{ url_for('song.new_song') }}" class="form">
+    {% endif %}
+        <label>
+            Title
+            <input type="text" name="title" value="{{ song.title if song else '' }}" required>
+        </label>
+
+        <label>
+            Release date
+            <input type="date" name="release_date" value="{{ song.release_date if song and song.release_date else '' }}">
+        </label>
+
+        <label>
+            Duration in seconds
+            <input type="number" name="duration" min="1" value="{{ song.duration if song and song.duration else '' }}">
+        </label>
+
+        <label>
+            Album
+            <select name="album_id">
+                <option value="">Single / no album</option>
+                {% for album in albums %}
+                    <option value="{{ album[0] }}" {% if song and song.album_id == album[0] %}selected{% endif %}>
+                        {{ album[1] }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        {% if not song %}
+            <label>
+                Artist
+                <select name="artist_id">
+                    <option value="">Unknown artist</option>
+                    {% for artist in artists %}
+                        <option value="{{ artist[0] }}">{{ artist[1] }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label>
+                Genre
+                <select name="genre_name">
+                    <option value="">No genre</option>
+                    {% for genre in genres %}
+                        <option value="{{ genre[0] }}">{{ genre[0] }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label>
+                Producer
+                <select name="producer_id">
+                    <option value="">No producer</option>
+                    {% for producer in producers %}
+                        <option value="{{ producer[0] }}">{{ producer[1] }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        {% endif %}
+
+        <button type="submit">Save song</button>
+    </form>
+{% endblock %}

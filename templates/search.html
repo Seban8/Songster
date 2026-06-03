@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <section class="page-heading">
+        <h2>Search songs</h2>
+        <p>Search with a regular expression across song titles, artists, albums and genres.</p>
+    </section>
+
+    <form method="GET" action="{{ url_for('song.search') }}" class="inline-form">
+        <input type="text" name="pattern" value="{{ pattern }}" placeholder="Try ^Midnight or pop" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    {% if pattern and not error %}
+        <h3>Results for "{{ pattern }}"</h3>
+        {% if songs %}
+            <ul class="list">
+                {% for song in songs %}
+                    <li>
+                        <a href="{{ url_for('song.detail', song_id=song.id) }}">{{ song.title }}</a>
+                        <span>{{ song.artists or "Unknown artist" }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No songs matched the pattern.</p>
+        {% endif %}
+    {% endif %}
+{% endblock %}
