@@ -1,3 +1,5 @@
+DROP VIEW IF EXISTS song_catalog CASCADE;
+
 DROP TABLE IF EXISTS sings CASCADE;
 DROP TABLE IF EXISTS song_producer CASCADE;
 DROP TABLE IF EXISTS song_genre CASCADE;
@@ -57,3 +59,22 @@ CREATE TABLE sings (
     art_id INT REFERENCES artists(art_id) ON DELETE CASCADE,
     PRIMARY KEY (song_id, art_id)
 );
+
+CREATE VIEW song_catalog AS
+SELECT
+    s.song_id,
+    s.title,
+    s.release_date,
+    s.duration,
+    a.title AS album_title,
+    STRING_AGG(DISTINCT ar.name, ', ') AS artists,
+    STRING_AGG(DISTINCT sg.genre_name, ', ') AS genres,
+    STRING_AGG(DISTINCT p.name, ', ') AS producers
+FROM songs s
+LEFT JOIN albums a ON a.alb_id = s.alb_id
+LEFT JOIN sings si ON si.song_id = s.song_id
+LEFT JOIN artists ar ON ar.art_id = si.art_id
+LEFT JOIN song_genre sg ON sg.song_id = s.song_id
+LEFT JOIN song_producer sp ON sp.song_id = s.song_id
+LEFT JOIN producers p ON p.prod_id = sp.prod_id
+GROUP BY s.song_id, s.title, s.release_date, s.duration, a.title;

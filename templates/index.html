@@ -3,6 +3,31 @@
 {% block content %}
     <section class="page-heading">
         <h2>Song catalog</h2>
-        <p>The song catalog will be added in a later step.</p>
+        <p>Browse songs, artists, albums, genres and producers.</p>
     </section>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Song</th>
+                <th>Artists</th>
+                <th>Album</th>
+                <th>Genres</th>
+                <th>Producers</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for song in songs %}
+                <tr>
+                    <td><a href="{{ url_for('song.detail', song_id=song.id) }}">{{ song.title }}</a></td>
+                    <td>{{ song.artists or "Unknown" }}</td>
+                    <td>{{ song.album_title or "Single" }}</td>
+                    <td>{{ song.genres or "-" }}</td>
+                    <td>{{ song.producers or "-" }}</td>
+                    <td>{{ song.duration_display }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

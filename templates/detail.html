@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <article class="detail">
+        <h2>{{ song.title }}</h2>
+        <dl>
+            <dt>Artists</dt>
+            <dd>{{ song.artists or "Unknown" }}</dd>
+
+            <dt>Album</dt>
+            <dd>{{ song.album_title or "Single" }}</dd>
+
+            <dt>Release date</dt>
+            <dd>{{ song.release_date or "Unknown" }}</dd>
+
+            <dt>Duration</dt>
+            <dd>{{ song.duration_display }}</dd>
+
+            <dt>Genres</dt>
+            <dd>{{ song.genres or "-" }}</dd>
+
+            <dt>Producers</dt>
+            <dd>{{ song.producers or "-" }}</dd>
+        </dl>
+    </article>
+{% endblock %}
