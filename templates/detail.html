@@ -49,7 +49,7 @@
         <form method="POST" action="{{ url_for('song.add_review', song_id=song.id) }}" class="review-form">
             <label>
                 Give rating (1-5):
-                <input type="number" name="rating" min="1" max="5" class="small-input" value="{{ review.rating if review else '' }}" required>
+                <input type="number" name="rating" min="1" max="5" class="small-input" value="{{ review.rating if review else '' }}">
             </label>
             <label>
                 Comment
@@ -58,5 +58,16 @@
 
             <button type="submit" class="good">Submit</button>
         </form>
+    </article>
+
+    <article class="detail">
+        <h2>Reviews:</h2>
+        {% for review in all_reviews %}
+            <strong>{{ review.display_name }}</strong>
+            <span>{{ review.rating }}/5</span>
+            <p>{{ review.comment }}</p>
+        {% else %}
+            <p>No reviews yet.</p>
+        {% endfor %}
     </article>
 {% endblock %}

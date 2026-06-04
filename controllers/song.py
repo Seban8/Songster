@@ -5,6 +5,7 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 from models.song import (
     create_song,
     delete_song,
+    control_of_comment,
     get_average_review,
     get_review,
     get_song,
@@ -12,6 +13,7 @@ from models.song import (
     list_artists,
     list_genres,
     list_producers,
+    list_reviews,
     list_songs,
     review_song,
     search_songs,
@@ -93,7 +95,14 @@ def detail(song_id):
 
     review = get_review(song_id, current_user_id())
     ratings = get_average_review(song_id)
-    return render_template("detail.html", song=song, review=review, ratings=ratings)
+    all_reviews = list_reviews(song_id)
+    return render_template(
+        "detail.html",
+        song=song,
+        review=review,
+        ratings=ratings,
+        all_reviews=all_reviews,
+    )
 
 
 @bp.route("/songs/<int:song_id>/review", methods=["POST"])
@@ -110,13 +119,13 @@ def add_review(song_id):
     if rating < 1 or rating > 5:
         return redirect(url_for("song.detail", song_id=song_id))
 
-    review_song(
-        song_id,
-        current_user_id(),
-        rating,
-        request.form.get("comment", "").strip(),
-    )
-    flash("Review saved.")
+    comment = request.form.get("comment", "").strip()
+    if not control_of_comment(comment):
+        flash("Comment must not contain vulgar language.", "error")
+        return redirect(url_for("song.detail", song_id=song_id))
+
+    review_song(song_id, current_user_id(), rating, comment)
+    flash("Review saved.", "success")
     return redirect(url_for("song.detail", song_id=song_id))
 
 

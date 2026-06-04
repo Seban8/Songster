@@ -71,6 +71,32 @@ def search_songs(pattern):
     ]
 
 
+def control_of_comment(comment):
+    curse_words = [
+        "fuck",
+        "fucking",
+        "shit",
+        "bullshit",
+        "asshole",
+        "bitch",
+        "bastard",
+        "damn",
+        "crap",
+        "dick",
+        "prick",
+        "piss",
+        "wanker",
+        "moron",
+        "idiot",
+    ]
+
+    if comment is None:
+        return False
+
+    pattern = r"\b(" + "|".join(curse_words) + r")\b"
+    return re.search(pattern, comment, re.IGNORECASE) is None
+
+
 def get_song(song_id):
     conn = db_connection()
     cur = conn.cursor()
@@ -205,6 +231,41 @@ def get_review(song_id, user_id):
         "rating": row[2],
         "comment": row[3],
     }
+
+
+def list_reviews(song_id):
+    conn = db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT
+            r.user_id,
+            u.display_name,
+            r.rating,
+            r.comment
+        FROM reviews r
+        JOIN users u ON u.user_id = r.user_id
+        WHERE r.song_id = %s
+        ORDER BY r.user_id
+        """,
+        (song_id,),
+    )
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    reviews = []
+    for row in rows:
+        reviews.append(
+            {
+                "user_id": row[0],
+                "display_name": row[1],
+                "rating": row[2],
+                "comment": row[3],
+            }
+        )
+
+    return reviews
 
 
 def get_average_review(song_id):
