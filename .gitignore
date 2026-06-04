@@ -1,5 +1,9 @@
 __pycache__/
-*.pyc
 .DS_Store
+.Rhistory
+venv/
 .venv/
+*.pyc
 .env
+*.db
+*.egg-info/
