@@ -1,3 +1,4 @@
+DROP VIEW IF EXISTS song_review CASCADE;
 DROP VIEW IF EXISTS song_catalog CASCADE;
 
 DROP TABLE IF EXISTS reviews CASCADE;
@@ -93,3 +94,11 @@ LEFT JOIN song_genre sg ON sg.song_id = s.song_id
 LEFT JOIN song_producer sp ON sp.song_id = s.song_id
 LEFT JOIN producers p ON p.prod_id = sp.prod_id
 GROUP BY s.song_id, s.title, s.release_date, s.duration, a.title;
+
+CREATE VIEW song_review AS
+SELECT
+    song_id,
+    AVG(rating) AS average_rating,
+    COUNT(*) AS review_count
+FROM reviews
+GROUP BY song_id;

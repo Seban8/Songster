@@ -162,6 +162,75 @@ def delete_song(song_id):
     conn.close()
 
 
+def review_song(song_id, user_id, rating, comment):
+    conn = db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        INSERT INTO reviews (song_id, user_id, rating, comment)
+        VALUES (%s, %s, %s, %s)
+        ON CONFLICT (song_id, user_id)
+        DO UPDATE SET
+            rating = EXCLUDED.rating,
+            comment = EXCLUDED.comment
+        """,
+        (song_id, user_id, rating, comment),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+def get_review(song_id, user_id):
+    conn = db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT song_id, user_id, rating, comment
+        FROM reviews
+        WHERE song_id = %s AND user_id = %s
+        """,
+        (song_id, user_id),
+    )
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if row is None:
+        return None
+
+    return {
+        "song_id": row[0],
+        "user_id": row[1],
+        "rating": row[2],
+        "comment": row[3],
+    }
+
+
+def get_average_review(song_id):
+    conn = db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT average_rating, review_count
+        FROM song_review
+        WHERE song_id = %s
+        """,
+        (song_id,),
+    )
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if row is None:
+        return None
+
+    return {
+        "average_rating": row[0],
+        "review_count": row[1],
+    }
+
+
 def list_artists():
     conn = db_connection()
     cur = conn.cursor()

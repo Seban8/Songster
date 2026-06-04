@@ -34,6 +34,7 @@ def init_db():
     run_sql_file(cur, "schema.sql")
     run_sql_file(cur, "seed.sql")
     import_liked_songs(cur)
+    run_sql_file(cur, "review_seed.sql")
 
     conn.commit()
     cur.close()

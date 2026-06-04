@@ -1,16 +1,19 @@
 import re
 
-from flask import Blueprint, redirect, render_template, request, session, url_for
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
 from models.song import (
     create_song,
     delete_song,
+    get_average_review,
+    get_review,
     get_song,
     list_albums,
     list_artists,
     list_genres,
     list_producers,
     list_songs,
+    review_song,
     search_songs,
     update_song,
 )
@@ -87,7 +90,34 @@ def detail(song_id):
     song = get_song(song_id)
     if song is None:
         return redirect(url_for("song.index"))
-    return render_template("detail.html", song=song)
+
+    review = get_review(song_id, current_user_id())
+    ratings = get_average_review(song_id)
+    return render_template("detail.html", song=song, review=review, ratings=ratings)
+
+
+@bp.route("/songs/<int:song_id>/review", methods=["POST"])
+def add_review(song_id):
+    song = get_song(song_id)
+    if song is None:
+        return redirect(url_for("song.index"))
+
+    try:
+        rating = int(request.form.get("rating", ""))
+    except ValueError:
+        return redirect(url_for("song.detail", song_id=song_id))
+
+    if rating < 1 or rating > 5:
+        return redirect(url_for("song.detail", song_id=song_id))
+
+    review_song(
+        song_id,
+        current_user_id(),
+        rating,
+        request.form.get("comment", "").strip(),
+    )
+    flash("Review saved.")
+    return redirect(url_for("song.detail", song_id=song_id))
 
 
 @bp.route("/songs/new", methods=["GET", "POST"])

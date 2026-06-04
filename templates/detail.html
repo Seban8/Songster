@@ -2,7 +2,20 @@
 
 {% block content %}
     <article class="detail">
-        <h2>{{ song.title }}</h2>
+        <div class="detail-header">
+            <div>
+                <p class="detail-kicker">Song</p>
+                <h2>{{ song.title }}</h2>
+            </div>
+            <div class="rating-summary">
+                <span class="rating-label">Average rating</span>
+                <strong>{{ "%.1f"|format(ratings.average_rating) if ratings else "0.0" }}</strong>
+                <span class="rating-meta">
+                    {{ ratings.review_count if ratings else 0 }} reviews
+                </span>
+            </div>
+        </div>
+
         <dl>
             <dt>Artists</dt>
             <dd>{{ song.artists or "Unknown" }}</dd>
@@ -29,5 +42,21 @@
                 <button type="submit" class="danger">Delete</button>
             </form>
         </div>
+    </article>
+
+    <article class="detail">
+        <h2>Rating</h2>
+        <form method="POST" action="{{ url_for('song.add_review', song_id=song.id) }}" class="review-form">
+            <label>
+                Give rating (1-5):
+                <input type="number" name="rating" min="1" max="5" class="small-input" value="{{ review.rating if review else '' }}" required>
+            </label>
+            <label>
+                Comment
+                <textarea name="comment" class="comment-box">{{ review.comment if review else '' }}</textarea>
+            </label>
+
+            <button type="submit" class="good">Submit</button>
+        </form>
     </article>
 {% endblock %}
